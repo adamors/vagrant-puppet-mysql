@@ -5,8 +5,8 @@ Puppet manifests to install and configure MySQL on our default Ubuntu Precise Va
 ### Install MySQL
 To install the MySQL client and server add one of the following to your manifest:
 
-1. `class { 'mysql': }`
-2. `include 'mysql'`
+- `class { 'mysql': }`
+- `include 'mysql'`
 
 This will also set the `root` password (see below for further details), and configure MySQL to use the `UTC` timezone.
 
