@@ -8,7 +8,7 @@ To install the MySQL client and server add one of the following to your manifest
 - `class { 'mysql': }`
 - `include 'mysql'`
 
-This will also set the `root` password (see below for further details), and configure MySQL to use the `UTC` timezone.
+This will also set the `root` password (see below for further details), remove any anonymous user accounts, and configure MySQL to use the `UTC` timezone.
 
 #### Specify the `root` password
 By default, the `root` password will be set to 'root'. You can specify an alternative password using the `root_password` parameter:
