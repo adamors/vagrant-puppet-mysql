@@ -19,6 +19,11 @@ class mysql ($root_password = 'root') {
     require => Service['mysql'],
   }
 
+  # Delete the anonymous accounts.
+  mysql::user::drop { 'anonymous':
+    user => '',
+  }
+
   # Override default MySQL settings.
   file { '/etc/mysql/conf.d/vagrant.cnf':
     owner   => 'mysql',
