@@ -36,21 +36,45 @@ To create multiple database using a single statement, pass an array to the `mysq
 mysql::db::create { ['devdb', 'stagingdb', 'productiondb']: }
 ~~~~~
 
-### Create a user
-To create a new user, pass the username, password, and host to the `mysql::user::create` helper:
+### Create a user, and grant privileges
+To create grant privileges to a user pass the username, host, password, and database to the `mysql::user::grant` helper. If the user does not already exist, it will be created.
 
 ~~~~~ruby
-# Creates the user jimbob@localhost, with the password 'banjo'
-mysql::user::create { 'jimbob@localhost':
+# Grants ALL privileges on the 'deliverance' database to jimbob@localhost
+mysql::user::grant {
   user     => 'jimbob',
   host     => 'localhost',
-  password => 'banjo',
+  password => 'jimbobsecret',
+  database => 'deliverance',
 }
 
 # 'user' parameter inferred from title
-mysql::user::create { 'jimbob':
+mysql::user::grant { 'jimbob':
   host     => 'localhost',
-  password => 'banjo',
+  password => 'jimbobsecret',
+  database => 'deliverance',
+}
+~~~~~
+
+For greater control, you may also pass the table and privileges you wish to set.
+
+~~~~~ruby
+# Grants ALL privileges on the 'deliverance.squeal' table to
+# jimbob@localhost
+mysql::user::grant { 'jimbob':
+  host     => 'localhost',
+  password => 'jimbobsecret',
+  database => 'deliverance',
+  table    => 'squeal',
+}
+
+# Grants CREATE privileges on the 'deliverance' database to
+# jimbob@localhost
+mysql::user::grant { 'jimbob':
+  host       => 'localhost',
+  password => 'jimbobsecret',
+  database   => 'deliverance',
+  privileges => 'CREATE',
 }
 ~~~~~
 
@@ -67,43 +91,5 @@ mysql::user::drop {
 # 'user' parameter inferred from title
 mysql::user::drop { 'marylou':
   host => '192.168.0.2',
-}
-~~~~~
-
-### Grant privileges to a user
-To grant database privileges to a user, pass the username, host, and database to the `mysql::user::grant` helper.
-
-~~~~~ruby
-# Grants ALL privileges on the 'deliverance' database to jimbob@localhost
-mysql::user::grant {
-  user     => 'jimbob',
-  host     => 'localhost',
-  database => 'deliverance',
-}
-
-# 'user' parameter inferred from title
-mysql::user::grant { 'jimbob':
-  host     => 'localhost',
-  database => 'deliverance',
-}
-~~~~~
-
-For greater control, you may also pass the table and privileges you wish to set.
-
-~~~~~ruby
-# Grants ALL privileges on the 'deliverance.squeal' table to
-# jimbob@localhost
-mysql::user::grant { 'jimbob':
-  host     => 'localhost',
-  database => 'deliverance',
-  table    => 'squeal',
-}
-
-# Grants CREATE privileges on the 'deliverance' database to
-# jimbob@localhost
-mysql::user::grant { 'jimbob':
-  host       => 'localhost',
-  database   => 'deliverance',
-  privileges => 'CREATE',
 }
 ~~~~~
