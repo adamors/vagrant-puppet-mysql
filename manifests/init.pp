@@ -20,6 +20,15 @@ class mysql ($root_password = 'root') {
     require => Package['mysql-server'],
   }
 
+  # Override default MySQL settings.
+  file { '/etc/mysql/conf.d/vagrant.cnf':
+    owner   => 'mysql',
+    group   => 'mysql',
+    source  => 'puppet:///modules/mysql/vagrant.cnf',
+    notify  => Service['mysql::mysql'],
+    require => Package['mysql-server'],
+  }
+
   # Set the root password.
   exec { 'mysql::set_root_password':
     unless  => "mysqladmin -uroot -p${root_password} status",
@@ -31,15 +40,6 @@ class mysql ($root_password = 'root') {
   # Delete the anonymous accounts.
   mysql::user::drop { 'anonymous':
     user => '',
-  }
-
-  # Override default MySQL settings.
-  file { '/etc/mysql/conf.d/vagrant.cnf':
-    owner   => 'mysql',
-    group   => 'mysql',
-    source  => 'puppet:///modules/mysql/vagrant.cnf',
-    notify  => Service['mysql::mysql'],
-    require => Package['mysql-server'],
   }
 }
 
