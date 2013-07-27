@@ -41,7 +41,7 @@ To create grant privileges to a user pass the username, host, password, and data
 
 ~~~~~ruby
 # Grants ALL privileges on the 'deliverance' database to jimbob@localhost
-mysql::user::grant {
+mysql::user::grant { 'jimbob_all_privileges':
   user     => 'jimbob',
   host     => 'localhost',
   password => 'jimbobsecret',
