@@ -1,4 +1,4 @@
-class mysql ($root_password = 'root') {
+class mysql ($root_password = 'root', $config_path = 'puppet:///modules/mysql/vagrant.cnf') {
   $bin = '/usr/bin:/usr/sbin'
 
   if ! defined(Package['mysql-server']) {
@@ -24,7 +24,7 @@ class mysql ($root_password = 'root') {
   file { '/etc/mysql/conf.d/vagrant.cnf':
     owner   => 'mysql',
     group   => 'mysql',
-    source  => 'puppet:///modules/mysql/vagrant.cnf',
+    source  => $config_path,
     notify  => Service['mysql::mysql'],
     require => Package['mysql-server'],
   }
