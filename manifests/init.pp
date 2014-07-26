@@ -41,5 +41,8 @@ class mysql ($root_password = 'root', $config_path = 'puppet:///modules/mysql/va
   mysql::user::drop { 'anonymous':
     user => '',
   }
+
+  mysql::db::create { 'vagrant_db': }
+
 }
 
