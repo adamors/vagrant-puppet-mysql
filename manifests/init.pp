@@ -1,40 +1,22 @@
-class mysql ($root_password = 'root', $config_path = 'puppet:///modules/mysql/vagrant.cnf') {
+class mysql ( $root_password = 'root', $db_name = 'vagrant_db') {
   $bin = '/usr/bin:/usr/sbin'
 
-  if ! defined(Package['mysql-server']) {
-    package { 'mysql-server':
-      ensure => 'present',
-    }
-  }
-
-  if ! defined(Package['mysql-client']) {
-    package { 'mysql-client':
-      ensure => 'present',
-    }
+  package { ['mysql-server', 'mysql-client']:
+    ensure => 'present',
   }
 
   service { 'mysql':
-    alias   => 'mysql::mysql',
     enable  => 'true',
     ensure  => 'running',
     require => Package['mysql-server'],
   }
 
-  # Override default MySQL settings.
-  file { '/etc/mysql/conf.d/vagrant.cnf':
-    owner   => 'mysql',
-    group   => 'mysql',
-    source  => $config_path,
-    notify  => Service['mysql::mysql'],
-    require => Package['mysql-server'],
-  }
-
   # Set the root password.
-  exec { 'mysql::set_root_password':
+  exec { 'mysql_set_root':
     unless  => "mysqladmin -uroot -p${root_password} status",
     command => "mysqladmin -uroot password ${root_password}",
     path    => $bin,
-    require => Service['mysql::mysql'],
+    require => Service['mysql'],
   }
 
   # Delete the anonymous accounts.
@@ -42,7 +24,14 @@ class mysql ($root_password = 'root', $config_path = 'puppet:///modules/mysql/va
     user => '',
   }
 
-  mysql::db::create { 'vagrant_db': }
+  mysql::db::create { $db_name : }
 
+  # Override default MySQL settings.
+  file { '/etc/mysql/conf.d/vagrant.cnf':
+    owner   => 'mysql',
+    group   => 'mysql',
+    source  => 'puppet:///modules/mysql/vagrant.cnf',
+    notify  => Service['mysql'],
+    require => Package['mysql-server'],
+  }
 }
-
